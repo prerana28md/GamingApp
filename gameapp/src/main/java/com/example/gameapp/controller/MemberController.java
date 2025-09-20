@@ -37,9 +37,15 @@ public class MemberController {
     @PutMapping("/{id}")
     public Member updateMember(@PathVariable String id, @RequestBody Member member) {
         try {
-            return memberService.updateMember(id, member);
+            System.out.println("[DEBUG] Update request for member id: " + id);
+            System.out.println("[DEBUG] Incoming member data: " + member);
+            Member updated = memberService.updateMember(id, member);
+            System.out.println("[DEBUG] Member updated successfully: " + updated);
+            return updated;
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update member", e);
+            System.err.println("[ERROR] Failed to update member: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to update member: " + e.getMessage(), e);
         }
     }
 
