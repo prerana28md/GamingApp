@@ -43,6 +43,7 @@ const Members = () => {
       const memberData = {
         ...formData,
         balance: parseFloat(formData.balance) || 0,
+        ...(editingMember ? { id: editingMember.id } : {}),
       };
 
       if (editingMember) {
