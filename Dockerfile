@@ -5,7 +5,7 @@ WORKDIR /app
 COPY gameapp/pom.xml .
 RUN mvn dependency:go-offline
 
-COPY gamingapp/src ./src
+COPY gameapp/src ./src
 RUN mvn clean package -DskipTests
 
 # Run stage
