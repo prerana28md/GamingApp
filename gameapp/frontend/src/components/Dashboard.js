@@ -1,46 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { gamesAPI, membersAPI, transactionsAPI, rechargesAPI } from '../services/api';
+
+import React from 'react';
 import ApiTest from './ApiTest';
 import './Dashboard.css';
 
-const Dashboard = () => {
-  const [stats, setStats] = useState({
-    totalGames: 0,
-    totalMembers: 0,
-    totalTransactions: 0,
-    totalRecharges: 0,
-  });
 
-  const [recentTransactions, setRecentTransactions] = useState([]);
-  const [loading, setLoading] = useState(true);
+const Dashboard = ({ stats, recentTransactions, members, games, loading, refreshDashboard }) => {
 
-  useEffect(() => {
-    fetchDashboardData();
-  }, []);
 
-  const fetchDashboardData = async () => {
-    try {
-      const [gamesRes, membersRes, transactionsRes, rechargesRes] = await Promise.all([
-        gamesAPI.getAll(),
-        membersAPI.getAll(),
-        transactionsAPI.getAll(),
-        rechargesAPI.getAll(),
-      ]);
-
-      setStats({
-        totalGames: gamesRes.data.length,
-        totalMembers: membersRes.data.length,
-        totalTransactions: transactionsRes.data.length,
-        totalRecharges: rechargesRes.data.length,
-      });
-
-      setRecentTransactions(transactionsRes.data.slice(0, 5));
-    } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    } finally {
-      setLoading(false);
-    }
+  const getMemberName = (transaction) => {
+    if (transaction.memberName) return transaction.memberName;
+    const member = members.find(m => m.id === transaction.memberId);
+    return member ? member.name : transaction.memberId;
   };
+
+  const getGameName = (transaction) => {
+    if (transaction.gameName) return transaction.gameName;
+    const game = games.find(g => g.id === transaction.gameId);
+    return game ? game.name : transaction.gameId;
+  };
+
 
   if (loading) {
     return <div className="loading">Loading dashboard...</div>;
@@ -95,14 +73,23 @@ const Dashboard = () => {
       </div>
 
       <div className="recent-section">
-        <h2>Recent Transactions</h2>
+        <div className="section-header">
+          <h2>Recent Transactions</h2>
+          <button 
+            className="btn btn-sm btn-secondary"
+            onClick={refreshDashboard}
+            title="Refresh data"
+          >
+            <i className="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
         <div className="recent-transactions">
           {recentTransactions.length > 0 ? (
             recentTransactions.map((transaction) => (
               <div key={transaction.id} className="transaction-item">
                 <div className="transaction-info">
-                  <span className="member-id">Member: {transaction.memberId}</span>
-                  <span className="game-id">Game: {transaction.gameId}</span>
+                  <span className="member-name">Member: {getMemberName(transaction)}</span>
+                  <span className="game-name">Game: {getGameName(transaction)}</span>
                 </div>
                 <div className="transaction-amount">
                   ₹{transaction.amount}

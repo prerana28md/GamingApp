@@ -2,6 +2,7 @@ package com.example.gameapp.controller;
 
 import com.example.gameapp.model.Member;
 import com.example.gameapp.service.MemberService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -26,26 +27,22 @@ public class MemberController {
     }
 
     @GetMapping("/{id}")
-    public Member getMemberById(@PathVariable String id) {
+    public ResponseEntity<Member> getMemberById(@PathVariable String id) {
         try {
-            return memberService.getMemberById(id);
+            Member member = memberService.getMemberById(id);
+            return ResponseEntity.ok(member);
         } catch (Exception e) {
-            throw new RuntimeException("Member not found", e);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
-    public Member updateMember(@PathVariable String id, @RequestBody Member member) {
+    public ResponseEntity<Member> updateMember(@PathVariable String id, @RequestBody Member member) {
         try {
-            System.out.println("[DEBUG] Update request for member id: " + id);
-            System.out.println("[DEBUG] Incoming member data: " + member);
-            Member updated = memberService.updateMember(id, member);
-            System.out.println("[DEBUG] Member updated successfully: " + updated);
-            return updated;
+            Member updatedMember = memberService.updateMember(id, member);
+            return ResponseEntity.ok(updatedMember);
         } catch (Exception e) {
-            System.err.println("[ERROR] Failed to update member: " + e.getMessage());
-            e.printStackTrace();
-            throw new RuntimeException("Failed to update member: " + e.getMessage(), e);
+            return ResponseEntity.notFound().build();
         }
     }
 

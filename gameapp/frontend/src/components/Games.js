@@ -55,8 +55,13 @@ const Games = () => {
       };
 
       if (editingGame) {
-        await gamesAPI.update(editingGame.id, gameData);
-        toast.success('Game updated successfully');
+        const response = await gamesAPI.update(editingGame.id, gameData);
+        if (response.status === 200) {
+          toast.success('Game updated successfully');
+        } else {
+          toast.error('Failed to update game');
+          return;
+        }
       } else {
         await gamesAPI.create(gameData);
         toast.success('Game created successfully');
@@ -76,7 +81,12 @@ const Games = () => {
       });
       fetchGames();
     } catch (error) {
-      toast.error('Failed to save game');
+      console.error('Error saving game:', error);
+      if (error.response?.status === 404) {
+        toast.error('Game not found. Please refresh and try again.');
+      } else {
+        toast.error('Failed to save game');
+      }
     }
   };
 

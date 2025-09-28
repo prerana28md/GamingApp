@@ -3,7 +3,7 @@ import { transactionsAPI, membersAPI, gamesAPI } from '../services/api';
 import { toast } from 'react-toastify';
 import './Transactions.css';
 
-const Transactions = () => {
+const Transactions = ({ refreshDashboard }) => {
   const [transactions, setTransactions] = useState([]);
   const [members, setMembers] = useState([]);
   const [games, setGames] = useState([]);
@@ -55,6 +55,9 @@ const Transactions = () => {
         gameId: '',
       });
       fetchData();
+      if (typeof refreshDashboard === 'function') {
+        refreshDashboard();
+      }
     } catch (error) {
       toast.error('Failed to create transaction');
     }
@@ -68,14 +71,22 @@ const Transactions = () => {
     });
   };
 
-  const getMemberName = (memberId) => {
-    const member = members.find(m => m.id === memberId);
-    return member ? member.name : memberId;
+  const getMemberName = (transaction) => {
+    // Use stored name if available, otherwise fallback to lookup
+    if (transaction.memberName) {
+      return transaction.memberName;
+    }
+    const member = members.find(m => m.id === transaction.memberId);
+    return member ? member.name : transaction.memberId;
   };
 
-  const getGameName = (gameId) => {
-    const game = games.find(g => g.id === gameId);
-    return game ? game.name : gameId;
+  const getGameName = (transaction) => {
+    // Use stored name if available, otherwise fallback to lookup
+    if (transaction.gameName) {
+      return transaction.gameName;
+    }
+    const game = games.find(g => g.id === transaction.gameId);
+    return game ? game.name : transaction.gameId;
   };
 
   if (loading) {
@@ -165,8 +176,8 @@ const Transactions = () => {
           <tbody>
             {transactions.map((transaction) => (
               <tr key={transaction.id}>
-                <td>{getMemberName(transaction.memberId)}</td>
-                <td>{getGameName(transaction.gameId)}</td>
+                <td>{getMemberName(transaction)}</td>
+                <td>{getGameName(transaction)}</td>
                 <td className="amount">₹{transaction.amount.toFixed(2)}</td>
                 <td>{new Date(transaction.date).toLocaleDateString()}</td>
               </tr>

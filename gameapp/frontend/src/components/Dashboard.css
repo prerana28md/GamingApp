@@ -59,9 +59,16 @@
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
-.recent-section h2 {
-  color: #333;
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 20px;
+}
+
+.section-header h2 {
+  color: #333;
+  margin: 0;
   font-size: 24px;
 }
 
@@ -87,8 +94,8 @@
   gap: 5px;
 }
 
-.member-id,
-.game-id {
+.member-name,
+.game-name {
   font-size: 14px;
   color: #666;
 }

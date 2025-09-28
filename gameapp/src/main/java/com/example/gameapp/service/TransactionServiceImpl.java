@@ -16,13 +16,16 @@ public class TransactionServiceImpl implements TransactionService {
     private final TransactionRepository transactionRepository;
     private final MemberRepository memberRepository;
     private final GameRepository gameRepository;
+    private final AdminService adminService;
 
     public TransactionServiceImpl(TransactionRepository transactionRepository, 
                                   MemberRepository memberRepository,
-                                  GameRepository gameRepository) {
+                                  GameRepository gameRepository,
+                                  AdminService adminService) {
         this.transactionRepository = transactionRepository;
         this.memberRepository = memberRepository;
         this.gameRepository = gameRepository;
+        this.adminService = adminService;
     }
 
     @Override
@@ -41,8 +44,15 @@ public class TransactionServiceImpl implements TransactionService {
 
         transaction.setAmount(game.getPrice());
         transaction.setDate(new Date());
+        transaction.setMemberName(member.getName());
+        transaction.setGameName(game.getName());
 
-        return transactionRepository.save(transaction);
+        Transaction savedTransaction = transactionRepository.save(transaction);
+        
+        // Automatically update admin collection for today
+        adminService.updateDailyCollection(new Date());
+        
+        return savedTransaction;
     }
 
     @Override

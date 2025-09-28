@@ -5,15 +5,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 @Document(collection = "members")
 public class Member {
-	@Override
-	public String toString() {
-		return "Member{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", phone='" + phone + '\'' +
-				", balance=" + balance +
-				'}';
-	}
     @Id
     private String id;
     private String name;

@@ -2,6 +2,7 @@ package com.example.gameapp.controller;
 
 import com.example.gameapp.model.Game;
 import com.example.gameapp.service.GameService;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -26,20 +27,22 @@ public class GameController {
     }
 
     @GetMapping("/{id}")
-    public Game getGameById(@PathVariable String id) {
+    public ResponseEntity<Game> getGameById(@PathVariable String id) {
         try {
-            return gameService.getGameById(id);
+            Game game = gameService.getGameById(id);
+            return ResponseEntity.ok(game);
         } catch (Exception e) {
-            throw new RuntimeException("Game not found", e);
+            return ResponseEntity.notFound().build();
         }
     }
 
     @PutMapping("/{id}")
-    public Game updateGame(@PathVariable String id, @RequestBody Game game) {
+    public ResponseEntity<Game> updateGame(@PathVariable String id, @RequestBody Game game) {
         try {
-            return gameService.updateGame(id, game);
+            Game updatedGame = gameService.updateGame(id, game);
+            return ResponseEntity.ok(updatedGame);
         } catch (Exception e) {
-            throw new RuntimeException("Failed to update game", e);
+            return ResponseEntity.notFound().build();
         }
     }
 

@@ -10,15 +10,19 @@ public class Transaction {
     private String id;
     private String memberId;
     private String gameId;
+    private String memberName;
+    private String gameName;
     private double amount;
     private Date date;
 
     public Transaction() { }
-	public Transaction(String id, String memberId, String gameId, double amount, Date date) {
+	public Transaction(String id, String memberId, String gameId, String memberName, String gameName, double amount, Date date) {
 		super();
 		this.id = id;
 		this.memberId = memberId;
 		this.gameId = gameId;
+		this.memberName = memberName;
+		this.gameName = gameName;
 		this.amount = amount;
 		this.date = date;
 	}
@@ -51,6 +55,22 @@ public class Transaction {
 	}
 	public void setDate(Date date) {
 		this.date = date;
+	}
+
+	public String getMemberName() {
+		return memberName;
+	}
+
+	public void setMemberName(String memberName) {
+		this.memberName = memberName;
+	}
+
+	public String getGameName() {
+		return gameName;
+	}
+
+	public void setGameName(String gameName) {
+		this.gameName = gameName;
 	}
 
     // constructors, getters, setters

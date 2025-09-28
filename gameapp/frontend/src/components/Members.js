@@ -43,12 +43,16 @@ const Members = () => {
       const memberData = {
         ...formData,
         balance: parseFloat(formData.balance) || 0,
-        ...(editingMember ? { id: editingMember.id } : {}),
       };
 
       if (editingMember) {
-        await membersAPI.update(editingMember.id, memberData);
-        toast.success('Member updated successfully');
+        const response = await membersAPI.update(editingMember.id, memberData);
+        if (response.status === 200) {
+          toast.success('Member updated successfully');
+        } else {
+          toast.error('Failed to update member');
+          return;
+        }
       } else {
         await membersAPI.create(memberData);
         toast.success('Member created successfully');
@@ -63,7 +67,12 @@ const Members = () => {
       });
       fetchMembers();
     } catch (error) {
-      toast.error('Failed to save member');
+      console.error('Error saving member:', error);
+      if (error.response?.status === 404) {
+        toast.error('Member not found. Please refresh and try again.');
+      } else {
+        toast.error('Failed to save member');
+      }
     }
   };
 

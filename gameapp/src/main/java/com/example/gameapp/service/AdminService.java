@@ -8,4 +8,6 @@ public interface AdminService {
     Admin addAdmin(Admin admin);
     List<Admin> getAllAdmins();
     List<Admin> getAdminsByDate(Date date);
+    Admin updateDailyCollection(Date date);
+    double getTotalCollectionForDate(Date date);
 }
